@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt" 
+	"strings"
+)
 
 func main(){	
 
@@ -52,14 +55,35 @@ func main(){
 		bookings = append(bookings, firstName + " " + lastName)
 		
 
-
+		if userTickets > availableTickets{
+			// Invalid input 
+			fmt.Printf("Oops! We only have %v tickets remaining. Try again!", availableTickets)
+			continue
+		}
 		// Update remaining tickets in the booking center 
 		availableTickets = availableTickets - userTickets
 
 		fmt.Printf("Thank you %v %v for booking %v tickets. You will receive an email confirming the same purchase on %v \n", firstName, lastName, userTickets, email)
 		fmt.Printf("%v tickets remaining for %v \n", availableTickets, conferenceName)
 		
-		fmt.Printf("These are all our bookings: %v\n", bookings)
+		// Alternate declaration of a slice to store only the first names of people who booked
+		firstNames := []string{}
+
+		for _, booking := range(bookings){
+			// Now we have access to each element 
+
+			// Strings package to split based on the space in the string 
+			var  names = strings.Fields(booking)
+			firstNames = append(firstNames, names[0])
+		}
+
+		fmt.Printf("These are all our bookings so far: %v\n", firstNames)
+		
+		if availableTickets == 0{
+			// End the booking process
+			fmt.Printf("Our conference is booked out. Hope to see you next year!")
+			break 
+		}
 
 	}
 	
