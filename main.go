@@ -3,6 +3,8 @@ package main
 import (
 	"fmt" 
 	"strings"
+
+	"booking-app/helper"
 )
 
 //Package level variables - defined outside all the functions so that it can be accessed by all functions 
@@ -27,7 +29,7 @@ func main(){
 	for {		
 		firstName, lastName, email, userTickets := getUserInput()
 
-		isValidEmail, isValidName, isValidTickets := validateUserInput(firstName, lastName, email, userTickets)
+		isValidEmail, isValidName, isValidTickets := helper.ValidateUserInput(firstName, lastName, email, userTickets, availableTickets)
 		
 		if isValidName && isValidEmail && isValidTickets{
 
@@ -81,20 +83,6 @@ func getFirstNames() []string {
 	return firstNames
 }
 
-func validateUserInput(firstName string, lastName string, email string, userTickets uint) (bool, bool, bool){
-
-	// Valid name Criteria: Username must be atleast 2 characters long
-	var isValidName = len(firstName) >=2 && len(lastName) >= 2
-
-	// Email Validation Criteria: Must contain certain characters in the input 
-	var isValidEmail = strings.Contains(email, "@")
-
-	// Number of tickets entered by user should be greater than 0
-	var isValidTickets = userTickets >= 0 && userTickets <= availableTickets
-
-	// In Go, we can return any number of values from a function instead of the conventional single value
-	return isValidEmail, isValidName, isValidTickets
-}
 
 func getUserInput() (string, string, string, uint){
 	
