@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt" 
-	"strings"
+	"strconv"
 
 	"booking-app/helper"
 )
@@ -16,7 +16,7 @@ const conferenceTickets   = 50
 var availableTickets uint = 50
 // Arrays to store homogenous data elements as a list 
 // Here we use Slices which are basically dynamic arrays
-var bookings = []string{}
+var bookings = make([]map[string]string, 0)
 
 
 func main(){	
@@ -73,11 +73,8 @@ func getFirstNames() []string {
 	firstNames := []string{}
 
 	for _, booking := range(bookings){
-		// Now we have access to each element 
-
-		// Strings package to split based on the space in the string 
-		var  names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		// Now this booking is a map containing all the user Data
+		firstNames = append(firstNames, booking["firstName"])
 	}
 
 	return firstNames
@@ -108,11 +105,23 @@ func getUserInput() (string, string, string, uint){
 }
 
 func bookTickets(userTickets uint, firstName string, lastName string, email string){
-	// Add new elements to this slice
-	bookings = append(bookings, firstName + " " + lastName)
-
 	// Update remaining tickets in the booking center 
 	availableTickets = availableTickets - userTickets
+
+	// Create a map to contain information about each booked user 
+	// All keys have the same datatype. Similarly, the values also have same datatypes
+	var userData = make(map[string]string)
+
+	userData["firstName"] = firstName
+	userData["lastName"]  = lastName
+	userData["email"]     = email
+	// We need to convert the number of tickets into a string datatype before storing inside the map
+	userData["tickets"]   = strconv.FormatUint(uint64(userTickets), 10)
+	
+	// Add new elements to this slice
+	bookings = append(bookings, userData)
+
+	
 
 	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive an email confirming the same purchase on %v \n", firstName, lastName, userTickets, email)
 	fmt.Printf("%v tickets remaining for %v \n", availableTickets, conferenceName)
