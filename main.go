@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt" 
-	"strconv"
-
+	"time"
 	"booking-app/helper"
 )
 
@@ -16,8 +15,14 @@ const conferenceTickets   = 50
 var availableTickets uint = 50
 // Arrays to store homogenous data elements as a list 
 // Here we use Slices which are basically dynamic arrays
-var bookings = make([]map[string]string, 0)
+var bookings = make([]UserData, 0)
 
+type UserData struct {
+	firstName string
+	lastName string
+	email string 
+	tickets uint
+}
 
 func main(){	
 
@@ -34,6 +39,8 @@ func main(){
 		if isValidName && isValidEmail && isValidTickets{
 
 			bookTickets(userTickets, firstName, lastName, email)
+
+			sendTicket(userTickets, firstName, lastName, email)
 		
 			firstNames := getFirstNames()
 			fmt.Printf("The bookings we have so far are: %v\n", firstNames)
@@ -41,7 +48,7 @@ func main(){
 			if availableTickets == 0 {
 				// End the program 
 
-				fmt.Println("Sorry! Our conference is booked out! Please try again next year!")
+				fmt.Println("Our conference is booked out! Please try again next year!")
 				break
 			}
 			
@@ -74,7 +81,7 @@ func getFirstNames() []string {
 
 	for _, booking := range(bookings){
 		// Now this booking is a map containing all the user Data
-		firstNames = append(firstNames, booking["firstName"])
+		firstNames = append(firstNames, booking.firstName)
 	}
 
 	return firstNames
@@ -110,14 +117,13 @@ func bookTickets(userTickets uint, firstName string, lastName string, email stri
 
 	// Create a map to contain information about each booked user 
 	// All keys have the same datatype. Similarly, the values also have same datatypes
-	var userData = make(map[string]string)
+	var userData = UserData {
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		tickets: userTickets,
+	}
 
-	userData["firstName"] = firstName
-	userData["lastName"]  = lastName
-	userData["email"]     = email
-	// We need to convert the number of tickets into a string datatype before storing inside the map
-	userData["tickets"]   = strconv.FormatUint(uint64(userTickets), 10)
-	
 	// Add new elements to this slice
 	bookings = append(bookings, userData)
 
@@ -125,4 +131,15 @@ func bookTickets(userTickets uint, firstName string, lastName string, email stri
 
 	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive an email confirming the same purchase on %v \n", firstName, lastName, userTickets, email)
 	fmt.Printf("%v tickets remaining for %v \n", availableTickets, conferenceName)
+}
+
+
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	// Function which generates a ticket and sends it to the user email 
+
+	time.Sleep(7 * time.Second)
+	var ticket = fmt.Sprintf("%v tickets for %v %v", userTickets, firstName, lastName)
+	fmt.Println("#########################")
+	fmt.Printf("Sending ticket to email: %v...\n %v\n", email, ticket)
+	fmt.Println("#########################")
 }
